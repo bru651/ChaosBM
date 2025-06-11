@@ -1,43 +1,35 @@
-//#include <SFML/Graphics.hpp>
 #include <vector>
 #include <string>
 #include <iostream>
 #include <fstream>
 
-
 int main()
 {
-    double sa = 0.50005,a=sa;
-    double sb = 0.5000505,b=sb;
-    double d = 0.0000005;
-    double lam = 1.99;
-    double sum;
+    double sx = 0.50005;
     std::vector<double> sums;
-    for (int j = 0; j < 1000; j++) {
-        sum = 0;
-        a = sa; b = sb+j*d;
-        //std::cout << "|A-B|: " << abs(a - b) << std::endl;
-        for (int i = 0; i < 1000; i++) {
-            a *= lam;
-            b *= lam;
-            if (a > 1)a -= 1.0;
-            if (b > 1)b -= 1.0;
-            sum += abs(a-b);
-            //std::cout << "|A-B|: " << abs(a-b) << std::endl;
-        }
-        sums.push_back(sum);
-        //std::cout << "SUM: " << sum << std::endl;
-    }
-    std::ofstream file("data1.csv");
-    if (file.is_open()) {
-        for (const auto& value : sums) {
-            file << value << "\n";
-        }
-        file.close();
-        std::cout << "Data saved to data.csv" << std::endl;
-    }
-    else {
+    std::ofstream file("data2.csv");
+
+    if (!file.is_open()) {
         std::cerr << "Unable to open file" << std::endl;
+        return 1;
     }
+
+    // Nag³ówki pliku CSV
+    file << "r,x\n";
+
+    // Iteracja przez wartoœci r
+    for (double r = 0.005; r < 4.0; r += 0.005) {
+        double x = sx;
+
+        for (int i = 0; i < 1000; i++) {
+            x = x * r * (1 - x);
+            // Zapisz wartoœæ x do pliku
+            file << r << "," << x << "\n";
+        }
+    }
+
+    file.close();
+    std::cout << "Data saved to data.csv" << std::endl;
+
     return 0;
 }
