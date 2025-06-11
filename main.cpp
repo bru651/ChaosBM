@@ -1,4 +1,4 @@
-//#include <SFML/Graphics.hpp>
+#include <SFML/Graphics.hpp>
 #include <vector>
 #include <string>
 #include <iostream>
@@ -7,6 +7,7 @@
 
 int main()
 {
+
     double sa = 0.50005,a=sa;
     double sb = 0.5000505,b=sb;
     double d = 0.0000005;
