@@ -1,10 +1,13 @@
 #include <SFML/Graphics.hpp>
 #include <cmath>
 #include <vector>
+#include <fstream>
 
 const float PI = 3.14159265f;
 const float g = 9.81f;
 const float dt = 0.05f;
+
+
 
 struct DoublePendulum {
     float l1 = 150.0f;
@@ -19,8 +22,15 @@ struct DoublePendulum {
 
     sf::Color color;
 
+    std::vector<std::pair<float, float>> trajectory; // do zapisu a2 vs a2_v
+
+
     DoublePendulum(float a1_init, float a2_init, sf::Color col)
         : a1(a1_init), a2(a2_init), color(col) {
+    }
+
+    void record() {
+        trajectory.emplace_back(a2, a2_v);
     }
 
     void update() {
@@ -97,6 +107,8 @@ int main() {
         if (!pause) {
             for (auto& p : pendulums)
                 p.update();
+            pendulums[0].record();
+            pendulums[1].record();
         }
 
         window.clear(sf::Color::Black);
@@ -104,6 +116,16 @@ int main() {
             p.draw(window, origin);
         window.display();
     }
+
+    std::ofstream file("trajectory.csv");
+    file << "a2_1,a2v_1,a2_2,a2v_2\n";
+    size_t size = std::min(pendulums[0].trajectory.size(), pendulums[1].trajectory.size());
+    for (size_t i = 0; i < size; ++i) {
+        std::pair<float,float> p1 = pendulums[0].trajectory[i];
+        std::pair<float, float> p2 = pendulums[1].trajectory[i];
+        file << p1.first << "," << p1.second << "," << p2.first << "," << p2.second << "\n";
+    }
+    file.close();
 
     return 0;
 }
